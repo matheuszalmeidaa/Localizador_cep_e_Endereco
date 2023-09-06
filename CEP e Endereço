@@ -1,0 +1,42 @@
+import requests
+import pprint
+
+print('deseja localizar o endereço ou o CEP')
+pergunta_inicial = len(input('CEP ou Endereço: '))
+
+if pergunta_inicial == 3:
+  cep = input('Digite o CEP: ')
+  cep = cep.replace("-","") .replace(".","") .replace(" ","")
+
+  link_cep = f'https://viacep.com.br/ws/{cep}/json/'
+
+  if len(cep) == 8 :
+    requisiçao_cep = requests.get(link_cep)
+    dic_requisiçao_cep = requisiçao_cep.json()
+    pprint.pprint(dic_requisiçao_cep)  #printa os valores por meio de linhas 
+
+  else :
+    print('CEP invalido')
+
+
+if pergunta_inicial == 8:
+  estado = input('Digite a sigla do Estado: ')
+  cidade = input('Digite a cidade: ')
+  #cidade = cidade.replace("","+")
+  logradouro = input('Digite o logradouro: ')
+  logradouro = logradouro.replace("","+")
+ 
+  link_endereco = f'https://viacep.com.br/ws/{estado}/{cidade}/{logradouro}/json/'
+
+  try:
+      requisicao_endereco = requests.get(link_endereco)
+      requisicao_endereco.raise_for_status()
+      dic_requisicao_endereco = requisicao_endereco.json()
+      pprint.pprint(dic_requisicao_endereco)
+  except requests.exceptions.HTTPError as x:
+    print(f"Erro na solicitação HTTP: {x}")
+  except requests.exceptions.RequestException as x:
+    print(f"Erro na solicitação: {x}")
+
+  else:
+      print('Opção inválida. Digite um "Endereço" válido.')
